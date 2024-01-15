@@ -4,7 +4,7 @@
 #include "consts.h"
 #include <iostream>
 #include <list>
-#include <cstlib>
+#include <cstdlib>
 
 class BaseGame {
 protected:
@@ -37,13 +37,13 @@ protected:
 
 class AssignmentGame : public BaseGame {
   protected:
-      //Structing Guessing
+      //Structuring Guessing
       struct Guess {
           int x;
           int y;
       };
 
-      //Making lists of the guesses 
+      //Making lists of the guesses
       std::list<Guess> correctGuess;
       std::list<Guess> incorrectGuess;
 
@@ -77,7 +77,7 @@ class AssignmentGame : public BaseGame {
           }
           return hits;
       }
-      
+
       int TestNearMiss(int x, int y, int dx, int dy) {
           if (CheckValidGuess(x + dx, y + dy) && AnotherGuess(x + dx, y + dy)) {
               correctGuess.push_back({ x + dx, y + dy });

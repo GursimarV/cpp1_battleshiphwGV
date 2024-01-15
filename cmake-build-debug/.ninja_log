@@ -1,0 +1,15 @@
+# ninja log v5
+8	78	7270579100414417	CMakeFiles/cpp1_battleshiphwGV.dir/tests/tests.cpp.obj	93b192a516411a2e
+0	753	7270579107176467	CMakeFiles/cpp1_battleshiphwGV.dir/src/board.cpp.obj	11beffda7f797e5c
+3	406	7270579343054173	CMakeFiles/cpp1_battleshiphwGV.dir/src/game.cpp.obj	d60be1ee7267441d
+9	455	7270579343547978	CMakeFiles/cpp1_battleshiphwGV.dir/src/main.cpp.obj	d3fe202f29ed5318
+455	595	7270579344909436	cpp1_battleshiphwGV.exe	e662035ae1b4a9b3
+3	498	7270580098796305	CMakeFiles/cpp1_battleshiphwGV.dir/src/game.cpp.obj	d60be1ee7267441d
+8	560	7270580099414574	CMakeFiles/cpp1_battleshiphwGV.dir/src/main.cpp.obj	d3fe202f29ed5318
+561	696	7270580100750993	cpp1_battleshiphwGV.exe	e662035ae1b4a9b3
+3	391	7270580503375148	CMakeFiles/cpp1_battleshiphwGV.dir/src/game.cpp.obj	d60be1ee7267441d
+7	425	7270580503714263	CMakeFiles/cpp1_battleshiphwGV.dir/src/main.cpp.obj	d3fe202f29ed5318
+426	545	7270580504876211	cpp1_battleshiphwGV.exe	e662035ae1b4a9b3
+4	441	7270583062134849	CMakeFiles/cpp1_battleshiphwGV.dir/src/game.cpp.obj	d60be1ee7267441d
+9	459	7270583062334342	CMakeFiles/cpp1_battleshiphwGV.dir/src/main.cpp.obj	d3fe202f29ed5318
+459	592	7270583063610957	cpp1_battleshiphwGV.exe	e662035ae1b4a9b3

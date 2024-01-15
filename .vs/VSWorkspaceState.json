@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\lib"
+    "\\lib",
+    "\\tests"
   ],
   "PreviewInSolutionExplorer": false
 }
