@@ -37,60 +37,85 @@ protected:
 
 class AssignmentGame : public BaseGame{
 protected:
-    int solve() override
-    {
+    //Structuring Guessing
+    struct Guess {
+        int x;
+        int y;
+    };
+
+    //Making lists of the guesses
+    std::list<Guess> correctGuess;
+    std::list<Guess> incorrectGuess;
+
+    int solve() override {
         int hits = 0;
 
-        // Goes over each part of the board by position
-        for (int i = 0; i < HEIGHT; i++)
-        {
-            for (int j = 0; j < WIDTH; j++)
-            {
-                // Check if the guess at this position is a HIT
-                if (this->board->guess(i, j) == ResponseType::HIT)
-                {
-                    //Increase the hit counter
-                    hits += 1;
-                }
+        //Initializing the random guess on both axis
+        while (hits <= SHIP_COUNT) {
+            int randomGuessX = 1 + rand() % 100;
+            int randomGuessY = 1 + rand() % 100;
 
-                // Check if the guess at this position is a NEARMISS
-                if (this->board->guess(i, j) == ResponseType::NEARMISS)
-                {
-                    // Check for nearby hits in straight directions
-                    hits += TestNearMiss(i + 1, j);
-                    hits += TestNearMiss(i - 1, j);
-                    hits += TestNearMiss(i, j + 1);
-                    hits += TestNearMiss(i, j - 1);
+            //Create a guess structure for the random guess
+            Guess guessRandomCurrent = { randomGuessX, randomGuessY };
 
-                    // Check for nearby hits in diagonal directions
-                    hits += TestNearMiss(i + 1, j + 1);
-                    hits += TestNearMiss(i - 1, j - 1);
-                    hits += TestNearMiss(i - 1, j + 1);
-                    hits += TestNearMiss(i + 1, j - 1);
-                }
+            //Get the response from the board about the guess
+            ResponseType response = this->board->guess(randomGuessX, randomGuessY);
+
+            //Checking the random guess whether they hit, near miss, or miss
+            if (response == ResponseType::HIT && AnotherGuess(randomGuessX, randomGuessY)) {
+                correctGuess.push_back(guessRandomCurrent);
+                hits += 1;
+            }
+            else if (response == ResponseType::NEARMISS) {
+                hits += TestNearMiss(randomGuessX, randomGuessY, 1, 0);
+                hits += TestNearMiss(randomGuessX, randomGuessY, -1, 0);
+                hits += TestNearMiss(randomGuessX, randomGuessY, 0, 1);
+                hits += TestNearMiss(randomGuessX, randomGuessY, 0, -1);
+            }
+            else if (response == ResponseType::MISS) {
+                incorrectGuess.push_back(guessRandomCurrent);
             }
         }
-        // Return the total hits count on the board
         return hits;
     }
 
-    // Function to test for a near miss at a given position
-    int TestNearMiss(int x, int y)
-    {
-        // Check if the guess at the specified position is a HIT and the position is valid
-        if (CheckValidGuess(x, y) && this->board->guess(x, y) == ResponseType::HIT)
-        {
-            // Return 1 if it's a near miss
+    // Function to test near misses in a given direction
+    int TestNearMiss(int x, int y, int dx, int dy) {
+        if (CheckValidGuess(x + dx, y + dy) && AnotherGuess(x + dx, y + dy)) {
+            // If it's a valid near miss, add the guess to the correctGuess list and return 1
+            correctGuess.push_back({ x + dx, y + dy });
             return 1;
         }
-        // Return 0 if not a near miss
         return 0;
     }
 
-    // Function to check if a guess at the specified position is valid
-    bool CheckValidGuess(int x, int y)
-    {
-        return x >= 0 && x < HEIGHT && y >= 0 && y < WIDTH;
+    // Function to check if the last guess is valid
+    bool CheckingLastGuess(int x, int y) {
+        // Check if the coordinates are present in either correctGuess or incorrectGuess lists
+        for (const auto& g : correctGuess) {
+            if (g.x == x && g.y == y) {
+                return false;
+            }
+        }
+
+        for (const auto& g : incorrectGuess) {
+            if (g.x == x && g.y == y) {
+                return false;
+            }
+        }
+        // If the coordinates are not present, return true
+        return true;
+        return SHIP_COUNT;
+    }
+
+    // Function to check if another guess at the given coordinates results in a hit
+    bool AnotherGuess(int x, int y) {
+        return this->board->guess(x, y) == ResponseType::HIT;
+    }
+
+    // Function to check if the given coordinates are within the valid range
+    bool CheckValidGuess(int x, int y) {
+        return x <= WIDTH && y <= HEIGHT;
     }
 };
 
