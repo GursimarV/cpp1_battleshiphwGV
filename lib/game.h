@@ -36,79 +36,45 @@ protected:
 };
 
 class AssignmentGame : public BaseGame {
-  protected:
-      //Structuring Guessing
-      struct Guess {
-          int x;
-          int y;
-      };
+protected:
+    int solve() override {
+        int hits = 0;
 
-      //Making lists of the guesses
-      std::list<Guess> correctGuess;
-      std::list<Guess> incorrectGuess;
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                if (this->board->guess(i, j) == ResponseType::HIT) {
+                    hits += 1;
+                }
 
-      int solve() override {
-          int hits = 0;
+                if (this->board->guess(i, j) == ResponseType::NEARMISS) {
+                    // straight
+                    hits += TestNearMiss(i + 1, j);
+                    hits += TestNearMiss(i - 1, j);
+                    hits += TestNearMiss(i, j + 1);
+                    hits += TestNearMiss(i, j - 1);
 
-          //Initializing the random guess on both axis
-          while (hits <= SHIP_COUNT) {
-              int randomGuessX = 1 + rand() % 100;
-              int randomGuessY = 1 + rand() % 100;
+                    // diagonal
+                    hits += TestNearMiss(i + 1, j + 1);
+                    hits += TestNearMiss(i - 1, j - 1);
+                    hits += TestNearMiss(i - 1, j + 1);
+                    hits += TestNearMiss(i + 1, j - 1);
+                }
+            }
+        }
 
-              ///Making a random response to the guess
-              Guess guessRandomCurrent = { randomGuessX, randomGuessY };
+        return hits;
+    }
 
-              ResponseType response = this->board->guess(randomGuessX, randomGuessY);
+    int TestNearMiss(int x, int y) {
+        if (CheckValidGuess(x, y) && this->board->guess(x, y) == ResponseType::HIT) {
+            return 1;
+        }
+        return 0;
+    }
 
-              //Checking the random guess whether they hit, near miss, or miss
-              if (response == ResponseType::HIT && AnotherGuess(randomGuessX, randomGuessY)) {
-                  correctGuess.push_back(guessRandomCurrent);
-                  hits += 1;
-              }
-              else if (response == ResponseType::NEARMISS) {
-                  hits += TestNearMiss(randomGuessX, randomGuessY, 1, 0);
-                  hits += TestNearMiss(randomGuessX, randomGuessY, -1, 0);
-                  hits += TestNearMiss(randomGuessX, randomGuessY, 0, 1);
-                  hits += TestNearMiss(randomGuessX, randomGuessY, 0, -1);
-              }
-              else if (response == ResponseType::MISS) {
-                  incorrectGuess.push_back(guessRandomCurrent);
-              }
-          }
-          return hits;
-      }
-
-      int TestNearMiss(int x, int y, int dx, int dy) {
-          if (CheckValidGuess(x + dx, y + dy) && AnotherGuess(x + dx, y + dy)) {
-              correctGuess.push_back({ x + dx, y + dy });
-              return 1;
-          }
-          return 0;
-      }
-
-      bool CheckingLastGuess(int x, int y) {
-          for (const auto& g : correctGuess) {
-              if (g.x == x && g.y == y) {
-                  return false;
-              }
-          }
-
-          for (const auto& g : incorrectGuess) {
-              if (g.x == x && g.y == y) {
-                  return false;
-              }
-          }
-
-          return true;
-      }
-
-      bool AnotherGuess(int x, int y) {
-          return this->board->guess(x, y) == ResponseType::HIT;
-      }
-
-      bool CheckValidGuess(int x, int y) {
-          return x <= WIDTH && y <= HEIGHT;
-      }
+    bool CheckValidGuess(int x, int y) {
+        return x >= 0 && x < HEIGHT && y >= 0 && y < WIDTH;
+    }
 };
 
 #endif /* GAME_H */
